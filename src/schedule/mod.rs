@@ -8,7 +8,7 @@ pub fn init() {
         loop {
             let _=locker.lock().unwrap();
             work();
-            thread::sleep(Duration::from_secs(10));        
+            thread::sleep(Duration::from_secs(10));
         }
     });
 }

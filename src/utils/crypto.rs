@@ -18,7 +18,7 @@ pub fn aes_encrypt_bytes(data: &[u8]) -> Result<Vec<u8>, symmetriccipher::Symmet
     //rng.fill_bytes(&mut iv);
     let key: [u8; 32] = [10; 32];
     let iv: [u8; 16] = [12; 16];
-    
+
     let mut encryptor = aes::cbc_encryptor( aes::KeySize::KeySize256, &key, &iv, blockmodes::PkcsPadding);
     let mut final_result = Vec::<u8>::new();
     let mut read_buffer = buffer::RefReadBuffer::new(data);
@@ -47,7 +47,7 @@ pub fn aes_decrypt_to_bytes(encrypted_data: &[u8]) -> Result<Vec<u8>, symmetricc
     //rng.fill_bytes(&mut iv);
     let key: [u8; 32] = [10; 32];
     let iv: [u8; 16] = [12; 16];
-    
+
     let mut decryptor = aes::cbc_decryptor( aes::KeySize::KeySize256, &key, &iv, blockmodes::PkcsPadding);
     let mut final_result = Vec::<u8>::new();
     let mut read_buffer = buffer::RefReadBuffer::new(encrypted_data);

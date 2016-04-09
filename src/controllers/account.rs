@@ -37,7 +37,7 @@ pub fn check_login(req:&mut Request)->bool{
     match user{
         None=>false,
         _=>true,
-    } 
+    }
 }
 
 #[derive(Debug)]

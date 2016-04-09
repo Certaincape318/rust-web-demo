@@ -87,7 +87,7 @@ pub fn init_router(router:&mut Router){
         });
 
         router.post("/task/",|req: &mut Request|{
-            let name=req.get_form_param("name"); 
+            let name=req.get_form_param("name");
             let content=req.get_form_param("content");
             let status=req.get_form_param("status").unwrap_or("0".to_owned());
             let time:DateTime<Local>=Local::now();

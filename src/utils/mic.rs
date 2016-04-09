@@ -44,7 +44,7 @@ pub fn invoke_system_command(command:&str,args:&[&str]){
             println!("status:{:?}",status);
         },
         Err(e)=>println!("error:{:?}",e),
-    }   
+    }
 }
 
 pub fn regex_test() {

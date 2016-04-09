@@ -18,7 +18,7 @@ fn get_conn()->PooledConnection<PostgresConnectionManager>{
     conn
 }
 lazy_static! {
-    static ref POOL:Pool<PostgresConnectionManager>  = connect_pool(); 
+    static ref POOL:Pool<PostgresConnectionManager>  = connect_pool();
 }
 fn connect_pool()->Pool<PostgresConnectionManager>{
     let config = reader::from_file(Path::new("./web-root/config/web.conf")).unwrap();
