@@ -20,6 +20,9 @@ extern crate regex;
 #[macro_use]
 extern crate lazy_static;
 extern crate config;
+extern crate redis;
+extern crate bincode;
+extern crate r2d2_redis;
 
 pub mod controllers;
 pub mod repository;
@@ -27,6 +30,7 @@ pub mod models;
 pub mod utils;
 pub mod services;
 pub mod schedule;
+pub mod cache;
 
 
 pub fn run(){
