@@ -27,7 +27,7 @@ pub fn get<T>(key:&str)->RedisResult<T> where T:Decodable{
 }
 
 #[derive(Debug,RustcEncodable, RustcDecodable, PartialEq)]
-    struct Task {
+struct Task {
     id: i32,
     name: Option<String>,
 }
@@ -65,6 +65,7 @@ fn get_conn()->PooledConnection<RedisConnectionManager>{
     let conn = POOL.get().unwrap();
     conn
 }
+/*
 fn test1(){
     let t=Task{id:100,name:Some("aaa".to_owned())};
     set("mykey1",t);
@@ -88,3 +89,4 @@ fn mock_data()->Vec<Task>{
     result.push(Task{id:3,name:Some("learn".to_owned())});
     result
 }
+*/
