@@ -11,8 +11,8 @@ pub struct Task {
     pub id              : i32,
     pub name            : Option<String>,
     pub content         : Option<String>,
-    pub create_time     : Option<DateTime<Local>>,
-    pub update_time     : Option<DateTime<Local>>,
+    pub create_time     : Option<DateTime<UTC>>,
+    pub update_time     : Option<DateTime<UTC>>,
     pub status          : i32,//0:new,1:ongoing,2:finished,3:canceld
 }
 

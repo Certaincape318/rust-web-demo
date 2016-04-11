@@ -91,7 +91,7 @@ pub fn init_router(router:&mut Router){
             let name=req.get_form_param("name");
             let content=req.get_form_param("content");
             let status=req.get_form_param("status").unwrap_or("0".to_owned());
-            let time:DateTime<Local>=Local::now();
+            let time:DateTime<UTC>=UTC::now();
             let id=req.get_form_param("id").unwrap_or("0".to_owned());
             let task=Task{
                 id:             i32::from_str(&*id).unwrap_or(0),

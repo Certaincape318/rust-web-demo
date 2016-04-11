@@ -8,6 +8,8 @@ pub fn list() -> Vec<Task> {
     if let Ok(list)=cached_list {
         println!("get from redis cache");
         return list;
+    }else{
+        let _=cache::del(CACHE_KEY);
     }
     cache::set("task_list",repos::list()).unwrap()
 }
