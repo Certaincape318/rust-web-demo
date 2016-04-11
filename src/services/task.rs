@@ -9,9 +9,7 @@ pub fn list() -> Vec<Task> {
         println!("get from redis cache");
         return list;
     }
-    let list= repos::list();
-    let _=cache::set("task_list",list);
-    cache::get("task_list").unwrap()
+    cache::set("task_list",repos::list()).unwrap()
 }
 
 pub fn get(id:i32) -> Option<Task> {

@@ -13,11 +13,11 @@ use r2d2_redis::RedisConnectionManager;
 use std::default::Default;
 use r2d2::{Pool, PooledConnection};
 
-pub fn set<T>(key:&str,value: T)->RedisResult<()> where T:Encodable{
+pub fn set<T>(key:&str,value: T)->RedisResult<T> where T:Encodable+Decodable{
     let conn=get_conn();
     let c:SerializeWrapper<T>=SerializeWrapper(value);
     let _ : () = try!(conn.set(key, c));
-    Ok(())
+    get(key)
 }
 
 pub fn get<T>(key:&str)->RedisResult<T> where T:Decodable{
@@ -32,8 +32,13 @@ pub fn del(key :&str)->RedisResult<()>{
     let _ : () = try!(conn.del(key));
     Ok(())
 }
-
-
+/*
+impl<'a,T> Clone for &'a SerializeWrapper<T> where T:Encodable {
+    fn clone(&self) -> &'a Self {
+        *self
+    }
+}
+*/
 struct SerializeWrapper<T>(T);
 impl<T> ToRedisArgs for SerializeWrapper<T> where T:Encodable {
     fn to_redis_args(&self) -> Vec<Vec<u8>> {
