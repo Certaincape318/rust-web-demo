@@ -1,12 +1,12 @@
 use chrono::*;
-#[derive(Default,Debug,RustcEncodable, RustcDecodable, PartialEq)]
+#[derive(Default,Debug)]
 pub struct Account {
     pub id          : i32,
     pub name        : Option<String>,
     pub password    : Option<String>,
 }
 
-#[derive(Default,Debug,RustcEncodable, RustcDecodable, PartialEq)]
+#[derive(Default,Debug,RustcEncodable, RustcDecodable, PartialEq,Eq)]
 pub struct Task {
     pub id              : i32,
     pub name            : Option<String>,

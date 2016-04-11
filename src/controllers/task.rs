@@ -6,6 +6,7 @@ use super::prelude::*;
 
 impl ToJson for Task {
     fn to_json(&self) -> Json {
+        //return Json::from_str(&json::encode(&self).unwrap()).unwrap();
         let mut m: BTreeMap<String, Json> = BTreeMap::new();
         m.insert("id".to_string(), self.id.to_json());
         m.insert("name".to_string(), self.name.to_json());

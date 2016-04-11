@@ -12,6 +12,7 @@ authors = [
 [dependencies]
 rand="*"
 hyper="*"
+#chrono= {version="*"}
 chrono= { version="*",features = ["rustc-serialize"]}
 term="*"
 iron="*"
