@@ -6,7 +6,7 @@ const CACHE_KEY: &'static str="task_list";
 pub fn list() -> Vec<Task> {
     let cached_list=cache::get(CACHE_KEY);
     if let Ok(list)=cached_list {
-        println!("get from redis cache");
+        debug!("get from redis cache");
         return list;
     }else{
         let _=cache::del(CACHE_KEY);

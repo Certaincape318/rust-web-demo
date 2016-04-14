@@ -32,13 +32,7 @@ pub fn del(key :&str)->RedisResult<()>{
     let _ : () = try!(conn.del(key));
     Ok(())
 }
-/*
-impl<'a,T> Clone for &'a SerializeWrapper<T> where T:Encodable {
-    fn clone(&self) -> &'a Self {
-        *self
-    }
-}
-*/
+
 struct SerializeWrapper<T>(T);
 impl<T> ToRedisArgs for SerializeWrapper<T> where T:Encodable {
     fn to_redis_args(&self) -> Vec<Vec<u8>> {
@@ -63,6 +57,7 @@ lazy_static! {
 fn connect_pool()->Pool<RedisConnectionManager>{
     let config = Default::default();
     let manager = RedisConnectionManager::new("redis://localhost").unwrap();
+    info!("Connected to redis://localhost");
     let pool = Pool::new(config, manager).unwrap();
     pool
 }

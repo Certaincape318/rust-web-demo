@@ -23,6 +23,8 @@ extern crate config;
 extern crate redis;
 extern crate bincode;
 extern crate r2d2_redis;
+#[macro_use]
+extern crate log;
 
 pub mod controllers;
 pub mod repository;
@@ -46,6 +48,6 @@ pub fn run(){
 
     let chain=controllers::get_chain();
     let host = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), port as u16);
-    println!("Listening on http://{}", host);
+    info!("Listening on http://{}", host);
     Iron::new(chain).http(host).unwrap();
 }

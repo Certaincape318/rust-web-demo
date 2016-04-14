@@ -86,21 +86,3 @@ pub fn base64_decode_to_string(decoded_data:&str)->Option<String>{
         _=>None,
     }
 }
-/*
-fn main() {
-    let message = "三巨头72分骑士胜 Hello World!";
-    let encrypted_data = aes_encrypt_string(message).ok().unwrap();
-    let decrypted_data = aes_decrypt_to_string(&encrypted_data[..]).ok().unwrap();
-
-    println!("{:?}",encrypted_data);
-    println!("{}",decrypted_data);
-
-    let encoded_s=base64_encode_string(message).expect("");
-    println!("{}",encoded_s);
-
-    //let decoded_s=String::from_utf8(encoded_s.from_base64().unwrap()).unwrap();
-    let decoded_s=base64_decode_to_string(&encoded_s).expect("");
-    println!("{}",&decoded_s);
-
-}
-*/

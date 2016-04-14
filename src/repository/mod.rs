@@ -33,7 +33,7 @@ fn connect_pool()->Pool<PostgresConnectionManager>{
 
     let config = Config::builder().pool_size(10).build();
     let pool=Pool::new(config, manager).unwrap();
-    println!("Connected to postgres with pool: {:?}", pool);
+    info!("Connected to postgres with pool: {:?}", pool);
     pool
 }
 

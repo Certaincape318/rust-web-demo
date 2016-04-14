@@ -71,7 +71,7 @@ impl AfterMiddleware for ErrorHandler {
         if let Some(_) = err.error.downcast::<NoRoute>() {
             Ok(Response::with((status::NotFound, "Custom 404 response")))
         } else {
-            println!("{:?}", err);
+            error!("{:?}", err);
             Err(err)
         }
     }
