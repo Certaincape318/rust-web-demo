@@ -11,7 +11,7 @@ $ rustc --version
 
 $ uname -a
  Linux u 4.2.0-30-generic #36-Ubuntu SMP Fri Feb 26 00:58:07 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
- 
+
 $ git clone https://github.com/hikelee/rust-web-demo.git
 
 $ cd rust-web-demo
@@ -19,10 +19,10 @@ $ cd rust-web-demo
 #run init.sql in postgresql client to init table/data
 $ cat web-root/sql/init.sql
 
-$ cargo run
+$RUST_LOG=rust_web_demo=info cargo run
 ```
 
-### test 
+### test
 ```sh
 #go to below url, login with admin/admin
 $ chrome http://localhost:8080/
