@@ -101,7 +101,7 @@ pub fn init_router(router:&mut Router){
                 update_time:    Some(time),
                 status:         i32::from_str(&*status).unwrap_or(0),
             };
-            println!("saving task:{:?}",&task);
+            debug!("saving task:{:?}",&task);
             service::save(&task);
             response::redirect(req,"/task/")
         });
@@ -115,8 +115,8 @@ pub fn init_router(router:&mut Router){
                             //let id=get_json_i64(&obj,"id");
                             let manufactor=get_json_string(&obj,"manufactor");
                             let id=get_json_i64(&obj,"id");
-                            println!("id:{}",id); 
-                            println!("manufactor:{:?}",manufactor);
+                            debug!("id:{}",id);
+                            debug!("manufactor:{:?}",manufactor);
                         }
                     }
                 }
