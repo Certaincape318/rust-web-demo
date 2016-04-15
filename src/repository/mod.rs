@@ -3,32 +3,31 @@ pub mod account;
 
 use postgres::rows::*;
 use postgres::types::ToSql;
-use std::path::Path;
 use r2d2::{Config,Pool, PooledConnection};
 use r2d2_postgres::{PostgresConnectionManager,SslMode};
-use config::reader;
 use rustc_serialize::{Encodable, Decodable};
 use cache;
-
+use utils::config::Config as MyConfig;
 pub trait Row2Model{
     fn convert(row:Row)->Self;
 }
 
-
 fn get_conn()->PooledConnection<PostgresConnectionManager>{
-    let conn = POOL.get().unwrap();
-    conn
+    match POOL.get(){
+        Ok(conn)=>conn,
+        Err(err)=>panic!("error in get_conn():{}",err)
+    }
 }
 lazy_static! {
     static ref POOL:Pool<PostgresConnectionManager>  = connect_pool();
 }
 fn connect_pool()->Pool<PostgresConnectionManager>{
-    let config = reader::from_file(Path::new("./web-root/config/web.conf")).unwrap();
-    let host = config.lookup_str("database.host").unwrap();
-    let port = config.lookup_str("database.port").unwrap();
-    let user_name = config.lookup_str("database.user_name").unwrap();
-    let password = config.lookup_str("database.password").unwrap();
-    let db_name = config.lookup_str("database.db_name").unwrap();
+    let config = MyConfig::default();
+    let host = config.get_str("database.host");
+    let port = config.get_str("database.port");
+    let user_name = config.get_str("database.user_name");
+    let password = config.get_str("database.password");
+    let db_name = config.get_str("database.db_name");
 
     let connect_str=format!("postgres://{}:{}@{}:{}/{}",user_name,password,host,port,db_name);
     info!("Connecting to postgres:{}",connect_str);
@@ -40,11 +39,11 @@ fn connect_pool()->Pool<PostgresConnectionManager>{
             info!("Connected to postgres with pool: {:?}", pool);
             return pool;
         }
-        Err(err)=>{ 
+        Err(err)=>{
             panic!("error occurs when connect to postgres {}.Error info:{}",connect_str,err);
         }
     };
-} 
+}
 
 pub fn find_cached_list<T>(query: &str, params: &[&ToSql],cache_key:&str)->Vec<T> where T:Row2Model+Encodable+Decodable{
     match cache::get(cache_key){
@@ -61,8 +60,13 @@ pub fn find_cached_list<T>(query: &str, params: &[&ToSql],cache_key:&str)->Vec<T
 }
 pub fn find_one<T>(query: &str, params: &[&ToSql])->Option<T> where T:Row2Model{
     let conn=get_conn();
-    for row in &conn.query(query, params).unwrap() {
-        return Some(T::convert(row));
+    match conn.query(query, params){
+        Ok(rows)=>{
+            for row in &rows{
+                return Some(T::convert(row));
+            }
+        },
+        Err(err)=> panic!("error occur when execute query:{},params:{:?},error:{}",query,params,err)
     }
     None
 }
@@ -70,8 +74,13 @@ pub fn find_one<T>(query: &str, params: &[&ToSql])->Option<T> where T:Row2Model{
 pub fn find_list<T>(query: &str, params: &[&ToSql])->Vec<T> where T:Row2Model{
     let mut result: Vec<T> = vec![];
     let conn=get_conn();
-    for row in &conn.query(query, params).unwrap() {
-        result.push(T::convert(row));
+    match conn.query(query, params){
+        Ok(rows)=>{
+            for row in &rows{
+                result.push(T::convert(row));
+            }
+        },
+        Err(err)=> panic!("error occur when execute query:{},params:{:?},error:{}",query,params,err)
     }
     result
 }
@@ -79,5 +88,11 @@ pub fn find_list<T>(query: &str, params: &[&ToSql])->Vec<T> where T:Row2Model{
 // return: the number of rows modified
 pub fn execute(query: &str, params: &[&ToSql])->u64{
     let conn=get_conn();
-    conn.execute(query,params).unwrap()
+    //conn.execute(query,params).unwrap()
+    match conn.execute(query, params){
+        Ok(count)=>{
+            return count;
+        },
+        Err(err)=> panic!("error occur when execute query:{},params:{:?},error:{}",query,params,err)
+    }
 }

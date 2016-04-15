@@ -37,17 +37,16 @@ pub mod cache;
 
 pub fn run(){
     use iron::prelude::*;
-    use std::path::Path;
     use std::net::*;
-    use config::reader;
-    use controllers;
-    use schedule;
     schedule::init();
-    let config = reader::from_file(Path::new("./web-root/config/web.conf")).unwrap();
-    let port = config.lookup_integer32("web.listen.port").unwrap();
-
-    let chain=controllers::get_chain();
+    let port =utils::config::Config::default().get_i32("web.listen.port");
     let host = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), port as u16);
-    info!("Listening on http://{}", host);
-    Iron::new(chain).http(host).unwrap();
+    match Iron::new(controllers::get_chain()).http(host){
+        Ok(http)=>{
+            info!("Success starting iron http server:{:?}",http);
+        },
+        Err(err)=>{
+            panic!("Error starting iron. The error is:{}",err);
+        }
+    }
 }

@@ -23,6 +23,7 @@ impl super::Row2Model for Task {
     }
 }
 pub fn list() -> Vec<Task> {
+    //println!("{}",module_path!());
     super::find_cached_list(LIST_SQL,&[],CACHE_KEY)
 }
 
