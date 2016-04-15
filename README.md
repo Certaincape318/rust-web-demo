@@ -4,14 +4,15 @@ rust-web-demo
 ### env
 ```sh
 $ cargo --version
- cargo 0.8.0-nightly (28a0cbb 2016-01-17)
+ cargo 0.9.0-nightly (8fc3fd8 2016-02-29)
 
 $ rustc --version
- rustc 1.7.0 (a5d1e7a59 2016-02-29)
+ rustc 1.8.0 (db2939409 2016-04-11)
 
 $ uname -a
- Linux u 4.2.0-30-generic #36-Ubuntu SMP Fri Feb 26 00:58:07 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+ Linux ubuntu 4.2.0-16-generic #19-Ubuntu SMP Thu Oct 8 15:35:06 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
 
+$ sudo apt-get install postgresql redis-server
 $ git clone https://github.com/hikelee/rust-web-demo.git
 
 $ cd rust-web-demo

@@ -56,10 +56,19 @@ lazy_static! {
 }
 fn connect_pool()->Pool<RedisConnectionManager>{
     let config = Default::default();
-    let manager = RedisConnectionManager::new("redis://localhost").unwrap();
-    info!("Connected to redis://localhost");
-    let pool = Pool::new(config, manager).unwrap();
-    pool
+    let connect_str="redis://localhost";
+    info!("Connecting to {}",connect_str);
+    let manager = RedisConnectionManager::new(connect_str).unwrap();
+    //let pool = Pool::new(config, manager).unwrap();
+    match Pool::new(config, manager){
+        Ok(pool)=>{
+            info!("Connected to redis with pool: {:?}", pool);
+            return pool;
+        }
+        Err(err)=>{ 
+            panic!("Error occured when connectted to redis:{}. Error info:{}",connect_str,err);
+        }
+    };
 }
 
 fn get_conn()->PooledConnection<RedisConnectionManager>{
