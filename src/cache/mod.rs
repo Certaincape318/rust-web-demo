@@ -13,11 +13,11 @@ use r2d2_redis::RedisConnectionManager;
 use std::default::Default;
 use r2d2::{Pool, PooledConnection};
 
-pub fn set<T>(key:&str,value: T)->RedisResult<T> where T:Encodable+Decodable{
+pub fn set<T>(key:&str,value: T)->RedisResult<()> where T:Encodable{
     let conn=get_conn();
     let c:SerializeWrapper<T>=SerializeWrapper(value);
     let _ : () = try!(conn.set(key, c));
-    get(key)
+    Ok(())
 }
 
 pub fn get<T>(key:&str)->RedisResult<T> where T:Decodable{

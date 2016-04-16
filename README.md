@@ -20,7 +20,7 @@ $ cd rust-web-demo
 #run init.sql in postgresql client to init table/data
 $ cat web-root/sql/init.sql
 
-$RUST_LOG=rust_web_demo=info cargo run
+$RUST_LOG=demo=info cargo run
 ```
 
 ### test

@@ -45,7 +45,7 @@ fn connect_pool()->Pool<PostgresConnectionManager>{
     };
 }
 
-pub fn find_cached_list<T>(query: &str, params: &[&ToSql],cache_key:&str)->Vec<T> where T:Row2Model+Encodable+Decodable{
+pub fn find_cached_list<T>(query: &str, params: &[&ToSql],cache_key:&str)->Vec<T> where T:Row2Model+Decodable+Encodable+Clone{
     match cache::get(cache_key){
         Ok(list)=>{
             debug!("get from redis cache");
@@ -56,7 +56,9 @@ pub fn find_cached_list<T>(query: &str, params: &[&ToSql],cache_key:&str)->Vec<T
             let _=cache::del(cache_key);
         }
     }
-    cache::set(cache_key,find_list(query,params)).unwrap()
+    let list=find_list(query,params);
+    cache::set(cache_key,list.clone()).unwrap();
+    list
 }
 pub fn find_one<T>(query: &str, params: &[&ToSql])->Option<T> where T:Row2Model{
     let conn=get_conn();

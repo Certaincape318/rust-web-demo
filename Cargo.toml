@@ -1,5 +1,5 @@
 [package]
-name = "rust_web_demo"
+name = "demo"
 version = "0.1.0"
 description = " Rust web demo based on iron"
 readme = "README.md"
@@ -8,6 +8,11 @@ license = "MIT"
 authors = [
     "Hike Li <hikelee@gmail.com>"
 ]
+
+[[bin]]
+doc=false
+name= "app"
+path="src/main.rs"
 
 [dependencies]
 rand="*"
