@@ -1,4 +1,4 @@
-ERVER="8080"
+SERVER="8080"
 RUNTIME_DIR=~/$SERVER/runtime
 EXE=app-$SERVER
 cd ~/projects/rust-web-demo
