@@ -22,30 +22,18 @@ pub fn init_router(router:&mut Router){
         });
 
         router.get("/task/json/", |_:&mut Request|{
-            let tasks=service::list();
-            let mut data = BTreeMap::new();
-            data.insert("tasks".to_string(), tasks.to_json());
-            let data = json::encode(&data).unwrap();
-            response::ok_json(&data)
+            response::ok_json(&format!("{}",service::list().to_json()))
         });
 
         router.get("/task/json/aes/",|_:&mut Request|{
-            let tasks=service::list();
-            let mut data = BTreeMap::new();
-            data.insert("tasks".to_string(), tasks.to_json());
-            let data = json::encode(&data).unwrap();
-            let data=crypto::aes_encrypt_string(&data);
+            let data=crypto::aes_encrypt_string(&format!("{}",service::list().to_json()));
             let data=crypto::base64_encode_bytes(&data.ok().unwrap());
             let data=data.expect("");
             response::ok(&data)
         });
 
         router.get("/task/json/base64/",|_:&mut Request|{
-            let tasks=service::list();
-            let mut data = BTreeMap::new();
-            data.insert("tasks".to_string(), tasks.to_json());
-            let data = json::encode(&data).unwrap();
-            let data=crypto::base64_encode_string(&data).expect("");
+            let data=crypto::base64_encode_string(&format!("{}",service::list().to_json())).expect("");
             response::ok(&data)
         });
 
