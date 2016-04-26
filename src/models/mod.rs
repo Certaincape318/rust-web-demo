@@ -1,4 +1,5 @@
-use chrono::*;
+pub mod time;
+use self::time::Time;
 #[derive(Default,Debug)]
 pub struct Account {
     pub id          : i32,
@@ -11,8 +12,8 @@ pub struct Task {
     pub id              : i32,
     pub name            : Option<String>,
     pub content         : Option<String>,
-    pub create_time     : Option<DateTime<UTC>>,
-    pub update_time     : Option<DateTime<UTC>>,
+    pub create_time     : Option<Time>,
+    pub update_time     : Option<Time>,
     pub status          : i32,//0:new,1:ongoing,2:finished,3:canceld
 }
 

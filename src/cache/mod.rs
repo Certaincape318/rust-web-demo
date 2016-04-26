@@ -43,8 +43,12 @@ impl<T> ToRedisArgs for SerializeWrapper<T> where T:Encodable {
 impl <T> FromRedisValue for SerializeWrapper<T> where T: Decodable{
     fn from_redis_value(v: &Value) -> RedisResult<SerializeWrapper<T>> {
         if let Value::Data(ref items)=*v{
-            let decoded: T = decode(&items[..]).unwrap();
-            return Ok(SerializeWrapper(decoded));
+            match decode(&items[..]){
+                Ok(decoded)=> {return Ok(SerializeWrapper(decoded));},
+                Err(err)=>{
+                    panic!("erro read redis cache:{}",err);
+                }
+            }
         }
         Err(RedisError::from(Error::new(ErrorKind::Other, "oh no!")))
     }

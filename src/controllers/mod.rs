@@ -15,7 +15,6 @@ pub mod prelude {
     pub use std::collections::BTreeMap;
     pub use rustc_serialize::json;
     pub use rustc_serialize::json::{Json,ToJson};
-    pub use chrono::*;
     pub use hbs::{Template, HandlebarsEngine, DirectorySource, MemorySource};
     pub use iron::prelude::*;
     pub use iron::{Url, status};
