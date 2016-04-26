@@ -3,21 +3,25 @@ use std::io::prelude::*;
 use rustc_serialize::*;
 use postgres;
 use postgres::types::{Type, FromSql, ToSql, IsNull, SessionInfo};
-use redis::RedisResult;
-use redis::ToRedisArgs;
-use redis::FromRedisValue;
-use redis::RedisError;
-use redis::Value;
-use std::io::Error;
-use std::io::ErrorKind;
+use redis::{RedisResult, ToRedisArgs, FromRedisValue, RedisError, Value};
+use std::io::{Error, ErrorKind};
 use bincode::SizeLimit;
 use bincode::rustc_serialize::{encode, decode};
-
+use std::ops::Deref;
 
 #[derive(Debug,Copy,Clone, PartialEq,Eq)]
 pub struct Time{
     value:DateTime<UTC>,
 }
+
+//to explore all the chrono functions
+impl Deref for Time{
+    type Target=DateTime<UTC>;
+    fn deref(&self)->&DateTime<UTC>{
+        &self.value
+    }
+}
+
 impl Encodable for Time {
     fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
         self.value.format("%Y-%m-%d %H:%M:%S").to_string().encode(s)
