@@ -3,8 +3,8 @@ use iron::modifiers::Redirect;
 use iron::{Url, status};
 use rustc_serialize::json::{ToJson};
 use hbs::{Template};
-use hyper::header::{ContentType};
-use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
+use iron::headers::{ContentType};
+use iron::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 
 pub fn redirect(req:&Request,path:&str)->IronResult<Response>{
     let ref url=req.url;
