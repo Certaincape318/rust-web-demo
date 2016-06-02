@@ -9,13 +9,13 @@ pub fn http_post() {
     let client = Client::new();
     let mut res = client.post("http://www.baidu.com").body("foo=bar").send();
     match res {
-        Ok(ref mut res)=>{
+        Ok(ref mut res) => {
             let mut body = String::new();
             res.read_to_string(&mut body).unwrap();
             debug!("Response: {}", body);
-        },
-        Err(e)=>{
-            error!("error occurs:{:?}",e);
+        }
+        Err(e) => {
+            error!("error occurs:{:?}", e);
         }
     }
 }
@@ -29,21 +29,21 @@ pub fn http_get() {
 }
 
 // invoke_system_command("sh",&["-c","echo hello"]);
-pub fn invoke_system_command(command:&str,args:&[&str]){
-    //let output:Result<Output>=Command::new("sh").arg("-c").arg("echo hello").output();
-    let output:Result<Output>=Command::new(command).args(args).output();
+pub fn invoke_system_command(command: &str, args: &[&str]) {
+    // let output:Result<Output>=Command::new("sh").arg("-c").arg("echo hello").output();
+    let output: Result<Output> = Command::new(command).args(args).output();
     match output {
-        Ok(output)=>{
-            let status=output.status;
-            let stdout:Vec<u8>=output.stdout;
-            let stderr:Vec<u8>=output.stderr;
-            let stdout:String=String::from_utf8(stdout).ok().unwrap();
-            debug!("stdout:{:?}",stdout);
-            let stderr:String=String::from_utf8(stderr).ok().unwrap();
-            debug!("stderr:{:?}",stderr);
-            debug!("status:{:?}",status);
-        },
-        Err(e)=>error!("error:{:?}",e),
+        Ok(output) => {
+            let status = output.status;
+            let stdout: Vec<u8> = output.stdout;
+            let stderr: Vec<u8> = output.stderr;
+            let stdout: String = String::from_utf8(stdout).ok().unwrap();
+            debug!("stdout:{:?}", stdout);
+            let stderr: String = String::from_utf8(stderr).ok().unwrap();
+            debug!("stderr:{:?}", stderr);
+            debug!("status:{:?}", status);
+        }
+        Err(e) => error!("error:{:?}", e),
     }
 }
 
@@ -52,8 +52,8 @@ pub fn regex_test() {
     let text = "2012-03-14, 2013-01-01 and 2014-07-05";
     for cap in re.captures_iter(text) {
         debug!("Month: {} Day: {} Year: {}",
-                 cap.at(2).unwrap_or(""), cap.at(3).unwrap_or(""),
-                 cap.at(1).unwrap_or(""));
+               cap.at(2).unwrap_or(""),
+               cap.at(3).unwrap_or(""),
+               cap.at(1).unwrap_or(""));
     }
 }
-

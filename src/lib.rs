@@ -35,18 +35,18 @@ pub mod schedule;
 pub mod cache;
 
 
-pub fn run(){
+pub fn run() {
     use iron::prelude::*;
     use std::net::*;
     schedule::init();
-    let port =utils::config::Config::default().get_i32("web.listen.port");
+    let port = utils::config::Config::default().get_i32("web.listen.port");
     let host = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), port as u16);
-    match Iron::new(controllers::get_chain()).http(host){
-        Ok(http)=>{
-            info!("Success starting iron http server:{:?}",http);
-        },
-        Err(err)=>{
-            panic!("Error starting iron. The error is:{}",err);
+    match Iron::new(controllers::get_chain()).http(host) {
+        Ok(http) => {
+            info!("Success starting iron http server:{:?}", http);
+        }
+        Err(err) => {
+            panic!("Error starting iron. The error is:{}", err);
         }
     }
 }

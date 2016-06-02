@@ -3,29 +3,29 @@ pub mod account;
 
 use iron_login;
 use std::path::Path;
-use iron::{AfterMiddleware,AroundMiddleware,Handler};
+use iron::{AfterMiddleware, AroundMiddleware, Handler};
 use logger::Logger;
 use mount::Mount;
 use staticfile::Static;
 use self::prelude::*;
 
 pub mod prelude {
-    pub use router::{Router,NoRoute};
+    pub use router::{Router, NoRoute};
     pub use std::str::FromStr;
     pub use std::collections::BTreeMap;
     pub use rustc_serialize::json;
-    pub use rustc_serialize::json::{Json,ToJson};
+    pub use rustc_serialize::json::{Json, ToJson};
     pub use hbs::{Template, HandlebarsEngine, DirectorySource, MemorySource};
     pub use iron::prelude::*;
     pub use iron::{Url, status};
     pub use iron::modifiers::Redirect;
-    pub use utils::{response};
+    pub use utils::response;
     pub use utils::request::*;
 }
 
-pub fn get_chain()->Chain{
+pub fn get_chain() -> Chain {
     let mut router = Router::new();
-    router.get("/",|_:&mut Request| response::template("index",()));
+    router.get("/", |_: &mut Request| response::template("index", ()));
     self::task::init_router(&mut router);
     self::account::init_router(&mut router);
 
@@ -50,18 +50,25 @@ pub fn get_chain()->Chain{
 struct LoginChecker;
 impl AroundMiddleware for LoginChecker {
     fn around(self, handler: Box<Handler>) -> Box<Handler> {
-        struct LoggerHandler<H: Handler> {  handler: H }
+        struct LoggerHandler<H: Handler> {
+            handler: H,
+        }
         impl<H: Handler> Handler for LoggerHandler<H> {
             fn handle(&self, req: &mut Request) -> IronResult<Response> {
                 if self::account::check_login(req) || req.url.path.join("/").contains("account") {
                     let res = self.handler.handle(req);
                     return res;
                 }
-                let url = Url::parse(format!("{}://{}:{}/account/login/",req.url.scheme,req.url.host,req.url.port).as_str()).unwrap();
+                let url = Url::parse(format!("{}://{}:{}/account/login/",
+                                             req.url.scheme,
+                                             req.url.host,
+                                             req.url.port)
+                        .as_str())
+                    .unwrap();
                 Ok(Response::with((status::Found, Redirect(url.clone()))))
             }
         }
-        Box::new(LoggerHandler {handler:handler }) as Box<Handler>
+        Box::new(LoggerHandler { handler: handler }) as Box<Handler>
     }
 }
 struct ErrorHandler;
