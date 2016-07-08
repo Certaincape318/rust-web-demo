@@ -4,7 +4,6 @@ pub mod account;
 use iron_login;
 use std::path::Path;
 use iron::{AfterMiddleware, AroundMiddleware, Handler};
-use logger::Logger;
 use mount::Mount;
 use staticfile::Static;
 use self::prelude::*;
@@ -43,7 +42,6 @@ pub fn get_chain() -> Chain {
     chain.link_after(ErrorHandler);
     chain.link_around(LoginChecker);
     chain.link_around(iron_login::LoginManager::new(b"My Secret Key"[..].to_owned()));
-    chain.link(Logger::new(None));
     chain
 }
 

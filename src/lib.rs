@@ -11,7 +11,6 @@ extern crate r2d2_postgres;
 extern crate time;
 extern crate handlebars_iron as hbs;
 extern crate term;
-extern crate logger;
 extern crate crypto;
 extern crate hyper;
 extern crate chrono;
