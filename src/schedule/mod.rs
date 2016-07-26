@@ -14,5 +14,5 @@ pub fn init() {
 }
 
 fn work() {
-    debug!("schedule working .....");
+    //debug!("schedule working .....");
 }

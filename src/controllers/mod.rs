@@ -1,13 +1,11 @@
 pub mod task;
 pub mod account;
 
-use iron_login;
 use std::path::Path;
 use iron::{AfterMiddleware, AroundMiddleware, Handler};
 use mount::Mount;
 use staticfile::Static;
 use self::prelude::*;
-
 pub mod prelude {
     pub use router::{Router, NoRoute};
     pub use std::str::FromStr;
@@ -19,7 +17,8 @@ pub mod prelude {
     pub use iron::{Url, status};
     pub use iron::modifiers::Redirect;
     pub use utils::response;
-    pub use utils::request::*;
+    pub use params::*;
+    pub use session::*;
 }
 
 pub fn get_chain() -> Chain {
@@ -32,18 +31,19 @@ pub fn get_chain() -> Chain {
     mount.mount("/", router).mount("/static", Static::new(Path::new("./web-root/static/")));
 
     let mut chain = Chain::new(mount);
-
     let mut hbse = HandlebarsEngine::new();
     hbse.add(Box::new(DirectorySource::new("./web-root/templates/", ".hbs")));
     if let Err(r) = hbse.reload() {
         panic!("{:?}", r);
     }
+    chain.link_before(Params {});
     chain.link_after(hbse);
     chain.link_after(ErrorHandler);
     chain.link_around(LoginChecker);
-    chain.link_around(iron_login::LoginManager::new(b"My Secret Key"[..].to_owned()));
+    chain.around(Session::new("key-123456", 3600, "redis://localhost"));
     chain
 }
+
 
 struct LoginChecker;
 impl AroundMiddleware for LoginChecker {
@@ -53,16 +53,15 @@ impl AroundMiddleware for LoginChecker {
         }
         impl<H: Handler> Handler for LoggerHandler<H> {
             fn handle(&self, req: &mut Request) -> IronResult<Response> {
-                if self::account::check_login(req) || req.url.path.join("/").contains("account") {
+                if self::account::check_login(req) || req.url.path().join("/").contains("account") {
                     let res = self.handler.handle(req);
                     return res;
                 }
-                let url = Url::parse(format!("{}://{}:{}/account/login/",
-                                             req.url.scheme,
-                                             req.url.host,
-                                             req.url.port)
-                        .as_str())
-                    .unwrap();
+                let url = format!("{}://{}:{}/account/login/",
+                                  req.url.scheme(),
+                                  req.url.host(),
+                                  req.url.port());
+                let url = Url::parse(url.as_str()).unwrap();
                 Ok(Response::with((status::Found, Redirect(url.clone()))))
             }
         }
@@ -75,7 +74,7 @@ impl AfterMiddleware for ErrorHandler {
         if let Some(_) = err.error.downcast::<NoRoute>() {
             Ok(Response::with((status::NotFound, "Custom 404 response")))
         } else {
-            error!("{:?}", err);
+            error!("error handler catch some errors:{:?}", err);
             Err(err)
         }
     }

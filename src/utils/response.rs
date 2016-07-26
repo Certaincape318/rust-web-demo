@@ -8,7 +8,8 @@ use iron::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 
 pub fn redirect(req: &Request, path: &str) -> IronResult<Response> {
     let ref url = req.url;
-    let url = Url::parse(format!("{}://{}:{}{}", url.scheme, url.host, url.port, path).as_str())
+    let url = Url::parse(format!("{}://{}:{}{}", url.scheme(), url.host(), url.port(), path)
+            .as_str())
         .unwrap();
     Ok(Response::with((status::Found, Redirect(url.clone()))))
 }
