@@ -13,47 +13,35 @@ use r2d2_redis::RedisConnectionManager;
 use std::default::Default;
 use r2d2::{Pool, PooledConnection};
 
-pub fn set<T>(key: &str, value: T) -> RedisResult<()>
-    where T: Encodable
-{
-    let conn = get_conn();
-    let c: SerializeWrapper<T> = SerializeWrapper(value);
-    let _: () = try!(conn.set(key, c));
+pub fn set<T: Encodable>(key: &str, value: &T) -> RedisResult<()> {
+    let _: () = try!(get_conn().set(key, EncodeWrapper(value)));
     Ok(())
 }
 
-pub fn get<T>(key: &str) -> RedisResult<T>
-    where T: Decodable
-{
-    let conn = get_conn();
-    let t: SerializeWrapper<T> = try!(conn.get(key));
+pub fn get<T: Decodable>(key: &str) -> RedisResult<T> {
+    let t: DecodeWrapper<T> = try!(get_conn().get(key));
     Ok(t.0)
 }
 
 
 pub fn del(key: &str) -> RedisResult<()> {
-    let conn = get_conn();
-    let _: () = try!(conn.del(key));
+    let _: () = try!(get_conn().del(key));
     Ok(())
 }
 
-struct SerializeWrapper<T>(T);
-impl<T> ToRedisArgs for SerializeWrapper<T>
-    where T: Encodable
-{
+struct EncodeWrapper<'a, T: 'a>(&'a T);
+impl<'a, T: Encodable + 'a> ToRedisArgs for EncodeWrapper<'a, T> {
     fn to_redis_args(&self) -> Vec<Vec<u8>> {
-        vec![encode(&self.0, SizeLimit::Infinite).unwrap()]
+        vec![encode(self.0, SizeLimit::Infinite).unwrap()]
     }
 }
-
-impl<T> FromRedisValue for SerializeWrapper<T>
-    where T: Decodable
-{
-    fn from_redis_value(v: &Value) -> RedisResult<SerializeWrapper<T>> {
+struct DecodeWrapper<T>(T);
+impl<T: Decodable> FromRedisValue for DecodeWrapper<T> {
+    fn from_redis_value(v: &Value) -> RedisResult<DecodeWrapper<T>> {
         if let Value::Data(ref items) = *v {
             match decode(&items[..]) {
                 Ok(decoded) => {
-                    return Ok(SerializeWrapper(decoded));
+                    return Ok(DecodeWrapper(decoded));
                 }
                 Err(err) => {
                     panic!("erro read redis cache:{}", err);

@@ -53,7 +53,7 @@ fn connect_pool() -> Pool<PostgresConnectionManager> {
 }
 
 pub fn find_cached_list<T>(query: &str, params: &[&ToSql], cache_key: &str) -> Vec<T>
-    where T: Row2Model + Decodable + Encodable + Clone
+    where T: Row2Model + Decodable + Encodable
 {
     match cache::get(cache_key) {
         Ok(list) => {
@@ -66,12 +66,10 @@ pub fn find_cached_list<T>(query: &str, params: &[&ToSql], cache_key: &str) -> V
         }
     }
     let list = find_list(query, params);
-    cache::set(cache_key, list.clone()).unwrap();
+    cache::set(cache_key, &list).unwrap();
     list
 }
-pub fn find_one<T>(query: &str, params: &[&ToSql]) -> Option<T>
-    where T: Row2Model
-{
+pub fn find_one<T: Row2Model>(query: &str, params: &[&ToSql]) -> Option<T> {
     let conn = get_conn();
     match conn.query(query, params) {
         Ok(rows) => {
@@ -89,9 +87,7 @@ pub fn find_one<T>(query: &str, params: &[&ToSql]) -> Option<T>
     None
 }
 
-pub fn find_list<T>(query: &str, params: &[&ToSql]) -> Vec<T>
-    where T: Row2Model
-{
+pub fn find_list<T: Row2Model>(query: &str, params: &[&ToSql]) -> Vec<T> {
     let mut result: Vec<T> = vec![];
     let conn = get_conn();
     match conn.query(query, params) {

@@ -6,7 +6,7 @@ pub struct Account {
     pub password: Option<String>,
 }
 
-#[derive(Default,Debug,RustcEncodable, RustcDecodable,Clone, PartialEq,Eq)]
+#[derive(Default,Debug,RustcEncodable, RustcDecodable)]
 pub struct Task {
     pub id: i32,
     pub name: Option<String>,
