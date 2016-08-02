@@ -3,29 +3,24 @@ extern crate time;
 extern crate postgres;
 extern crate rustc_serialize;
 extern crate iron;
-extern crate persistent;
 extern crate router;
 extern crate mount;
 extern crate staticfile;
 extern crate r2d2;
 extern crate r2d2_postgres;
-extern crate handlebars_iron as hbs;
-extern crate term;
 extern crate crypto;
-extern crate hyper;
-extern crate chrono;
 extern crate session;
 extern crate iron_params as params;
-extern crate regex;
-#[macro_use]
-extern crate lazy_static;
 extern crate config;
 extern crate redis;
 extern crate bincode;
 extern crate r2d2_redis;
+extern crate persistent_time;
+extern crate template;
+#[macro_use]
+extern crate lazy_static;
 #[macro_use]
 extern crate log;
-extern crate persistent_time;
 
 
 pub mod controllers;

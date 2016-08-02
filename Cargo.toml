@@ -15,31 +15,24 @@ name= "app"
 path="src/main.rs"
 
 [dependencies]
-rand="0.3"
-hyper="*"
-chrono= { version="0.2",features = ["rustc-serialize"]}
-term="0.4"
+time="*"
 iron="0.4"
 postgres = { version = "0.11", features = ["chrono"] }
 r2d2_postgres="0.10"
 r2d2="0.7"
 rustc-serialize = "0.3"
-persistent="0.1"
-cookie="0.2"
 rust-crypto = "0.2"
-regex="0.1"
 lazy_static = "0.1.*"
 config = "~0.1"
 redis="0.5"
 r2d2_redis="0.3"
 bincode = "0.5"
-time="*"
 log="0.3"
 session="0.1"
 iron-params="0.1"
 fern="0.3"
 mount="*"
 persistent-time="*"
+template="0.1"
 router={git="https://github.com/hikelee/router"}
-handlebars-iron={git="https://github.com/hikelee/handlebars-iron"}
 staticfile={git="https://github.com/hikelee/staticfile"}

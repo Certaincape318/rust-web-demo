@@ -1,9 +1,16 @@
 use std::sync::{Once, ONCE_INIT};
-use utils::crypto;
-use services::task as service;
-use models::*;
-use super::prelude::*;
+use std::str::FromStr;
+use std::collections::BTreeMap;
+use rustc_serialize::json::{self,Json, ToJson};
 use persistent_time::Time;
+use iron::prelude::*;
+use iron::status;
+use params::*;
+use router::Router;
+use utils::crypto;
+use services;
+use models::*;
+
 impl ToJson for Task {
     fn to_json(&self) -> Json {
         return Json::from_str(&json::encode(&self).unwrap()).unwrap();
@@ -21,29 +28,29 @@ static START: Once = ONCE_INIT;
 pub fn init_router(router: &mut Router) {
     START.call_once(|| {
         router.get("/task/",|_: &mut Request|{
-            let tasks=service::list();
+            let tasks=services::task::list();
             let mut data = BTreeMap::new();
             data.insert("tasks".to_string(), tasks.to_json());
-            response::template("task/list",data)
+            super::template("task/list",&data)
         });
 
         router.get("/task/json/", |_:&mut Request|{
-            response::ok_json(&format!("{}",service::list().to_json()))
+            super::ok_json(&format!("{}",services::task::list().to_json()))
         });
 
         router.get("/task/json/aes/",|_:&mut Request|{
-            let data=crypto::aes_encrypt_string(&format!("{}",service::list().to_json()));
+            let data=crypto::aes_encrypt_string(&format!("{}",services::task::list().to_json()));
             let data=crypto::base64_encode_bytes(&data.ok().unwrap());
             let data=data.expect("");
-            response::ok(&data)
+            super::ok_text(&data)
         });
 
         router.get("/task/json/base64/",|_:&mut Request|{
-            let data=crypto::base64_encode_string(&format!("{}",service::list().to_json())).expect("");
-            response::ok(&data)
+            let data=crypto::base64_encode_string(&format!("{}",services::task::list().to_json())).expect("");
+            super::ok_text(&data)
         });
 
-        router.get("/task/new",|_:&mut Request|response::template("task/new",()));
+        router.get("/task/new",|_:&mut Request|super::template("task/new",&()));
 
         router.get("/task/:id",|req: &mut Request|{
             let id=get_path_param(req,"id").unwrap_or("0".to_owned());
@@ -51,11 +58,11 @@ pub fn init_router(router: &mut Router) {
             let mut response = Response::new();
             response.set_mut(status::Ok);
             if id>0{
-                let task=service::get(id);
+                let task=services::task::get(id);
                 if let Some(task)=task {
                     let mut data = BTreeMap::new();
                     data.insert("task".to_string(), task.to_json());
-                    response.set_mut(Template::new("task/edit", data));
+                    response.set_mut(super::render("task/edit", &data).unwrap());
                 }
             }
             Ok(response)
@@ -65,9 +72,9 @@ pub fn init_router(router: &mut Router) {
             let id=get_path_param(req,"id").unwrap_or("0".to_owned());
             let id=i32::from_str(&*id).unwrap_or(0);
             if id>0{
-                service::delete(id);
+                services::task::delete(id);
             }
-            response::redirect(req,"/task/")
+            super::redirect(req,"/task/")
         });
 
         router.post("/task/",|req: &mut Request|{
@@ -85,8 +92,8 @@ pub fn init_router(router: &mut Router) {
                 status:         status,
             };
             debug!("saving task:{:?}",&task);
-            service::save(&task);
-            response::redirect(req,"/task/")
+            services::task::save(&task);
+            super::redirect(req,"/task/")
         });
 
         //curl --data-urlencode "data=NTDlhYMzMDDmnaEs5aSW6ZO+5Luj5Y+RLOmUmuaWh+acrA==" "http://localhost:8080/api"
