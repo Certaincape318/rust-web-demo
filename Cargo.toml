@@ -15,7 +15,7 @@ name= "app"
 path="src/main.rs"
 
 [dependencies]
-time="*"
+time="0.1"
 iron="0.4"
 postgres = { version = "0.11", features = ["chrono"] }
 r2d2_postgres="0.10"
@@ -31,8 +31,8 @@ log="0.3"
 session="0.1"
 iron-params="0.1"
 fern="0.3"
-mount="*"
+mount="0.2"
 persistent-time="*"
 template="0.1"
-router={git="https://github.com/hikelee/router"}
-staticfile={git="https://github.com/hikelee/staticfile"}
+router="0.2"
+staticfile="0.3"
